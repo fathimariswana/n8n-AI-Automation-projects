@@ -6,4 +6,6 @@ Automated LinkedIn Video Post Approval & Publishing Workflow
   duplicate posts, logs all actions to Google Sheets, and provides robust 
   error handling for each critical step. This automation saves time for 
   marketing teams, ensures content quality through human review, and 
-  maintains a transparent log for auditing. 
+  maintains a transparent log for auditing.
+
+the pdf attached will give complete walkthrough with the autoamtion did.
