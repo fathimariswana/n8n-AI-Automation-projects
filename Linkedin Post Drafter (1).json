@@ -1,0 +1,670 @@
+{
+  "name": "Linkedin Post Drafter",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -1020
+      ],
+      "id": "6f49ec70-aaac-4c13-ad39-b2682a6e7e90",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "nAqZdfZRU7IIYWAY",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "person": "QNvW_Rpmt0",
+        "text": "={{ $('Agent: Creat Post/Rewrite Post').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1720,
+        -740
+      ],
+      "id": "5b8cfaec-ecbd-469e-b1c5-d26ccf8df9dc",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "5NzXFW5HHlwOsWTU",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            },
+            {
+              "mode": "everyX",
+              "value": 10,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "feedUrl": "=https://www.youtube.com/feeds/videos.xml?channel_id=UCloCjpFkjlNb_5Gz_bsg3uw"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        -520
+      ],
+      "id": "dda7ad19-14c6-4291-9b28-599b8373c53b",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "studyfathima92@gmail.com",
+        "subject": "Approval Needed: LinkedIn Post Draft New Video",
+        "message": "=Hi Manager,\n\nA new LinkedIn post draft is ready for your approval.\n\nDraft Content:\n{{ $json.output }}\n\nPlease reply to this email with your comments and indicate “Approved” or “Declined”.\n\nThanks,\nMedia Team",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Respond",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Approve"
+                  },
+                  {
+                    "option": "Decline"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Notes",
+              "placeholder": "=Add notes here (required if declined)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        940,
+        -740
+      ],
+      "id": "9425cb0b-bfa9-444e-9210-17adde47f50c",
+      "name": "Send a mail to manager",
+      "webhookId": "810b0eb5-d146-4425-bb4f-8eda95ed1f8a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s3jYjfGFBzr9JmuP",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        -740
+      ],
+      "id": "7fa3038e-dc51-4724-89a5-5e6260d99e06",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9cfa9d6d-7b91-4b12-81bf-beb48ddf17a3",
+              "leftValue": "={{ $json.link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "183ece4e-9f56-433a-81a5-cebd9c7fc089",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -200,
+        -520
+      ],
+      "id": "bb5fa114-6f73-4e38-bb05-41834663d6fd",
+      "name": "Validate - link"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cpIurvxGl2pchIM2rHhCTYFBm6lXkJjvqHnCMHyVJdQ",
+          "mode": "list",
+          "cachedResultName": "PostsLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cpIurvxGl2pchIM2rHhCTYFBm6lXkJjvqHnCMHyVJdQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cpIurvxGl2pchIM2rHhCTYFBm6lXkJjvqHnCMHyVJdQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        20,
+        -700
+      ],
+      "id": "8b8813aa-09d1-4373-b857-d0dd00f14f8e",
+      "name": "PostLog",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gYUDGiIUS9AQepCH",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ \n  !$json.data?.Notes \n  ? \n`Write a concise, engaging LinkedIn post to announce a new YouTube video using the details below.\nOutput only the LinkedIn post content (no commentary or instructions).\nFormat the post with proper spacing, paragraph breaks, and include a YouTube video thumbnail for visual appeal.\n\nUse the following input values:\n• Video Title: ${$('RSS Feed Trigger').item.json.title}\n• Video URL: ${$('RSS Feed Trigger').item.json.link}\n• Channel/Author: ${$('RSS Feed Trigger').item.json.author}\n• Video Description: ${$json.description + ' ' + $json.link}\n\n✍️ Writing Instructions:\n1. Start with a scroll-stopping hook.\n2. Briefly summarize what the viewer will gain, learn, or enjoy from this video.\n3. Use a friendly, professional tone.\n4. Include relevant hashtags based on the topic (e.g., #AI, #EdTech, #Leadership, #CodingForKids).\n5. Include a clear call-to-action (e.g., “Watch now 👇”).\n6. End with a visual thumbnail-style YouTube link like:\n📺 Watch here: ${$('RSS Feed Trigger').item.json.link}\n\n⚠️ Do not include any introductory lines like “Here’s the post” or markdown formatting.\n⚠️ Output only the LinkedIn-ready post (no JSON, no labels).\n\n✅ The YouTube video link should remain visible in the final line to display the thumbnail preview.`\n\n  : \n`The manager provided feedback to improve this LinkedIn post:\n\nOriginal draft:\n${$json.postDraft}\n\nManager's notes:\n${$json.data.Notes}\n\nPlease rewrite the post accordingly to make it more engaging and professional.\n\nInclude the following information if needed:\n• Video Title: ${$('RSS Feed Trigger').item.json.title}\n• Video URL: ${$('RSS Feed Trigger').item.json.link}\n• Channel/Author: ${$('RSS Feed Trigger').item.json.author}\n• Video Description: ${$json.description + ' ' + $json.link}\n\nEnd the post with the YouTube link to ensure a thumbnail is shown:\n📺 Watch here: ${$('RSS Feed Trigger').item.json.link}\n\n⚠️ Output only the final LinkedIn post. Do not include any comments or notes.`\n}}\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        600,
+        -740
+      ],
+      "id": "03102e0b-dba2-4977-b6d0-542a52ba5f03",
+      "name": "Agent: Creat Post/Rewrite Post"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ee4b011d-e210-48c1-adbc-5772270e5987",
+              "leftValue": "={{ $json.data.Respond }}",
+              "rightValue": "=Decline",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1460,
+        -620
+      ],
+      "id": "47442183-3826-4532-879f-52cf7a55f81f",
+      "name": "Email Accept/Decline"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "04778a88-4714-4f0b-adf1-d829b6d61111",
+              "leftValue": "={{ $json.urn }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1940,
+        -740
+      ],
+      "id": "95b048d8-5923-4f1f-96fa-9698c2fb6086",
+      "name": "validate -Published"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1cpIurvxGl2pchIM2rHhCTYFBm6lXkJjvqHnCMHyVJdQ",
+          "mode": "list",
+          "cachedResultName": "PostsLog",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cpIurvxGl2pchIM2rHhCTYFBm6lXkJjvqHnCMHyVJdQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cpIurvxGl2pchIM2rHhCTYFBm6lXkJjvqHnCMHyVJdQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Post Text": "={{ $('Agent: Creat Post/Rewrite Post').item.json.output }}",
+            "Status": "Published",
+            "Video Link": "={{ $('RSS Feed Trigger').item.json.link }}",
+            "Video Title": "={{ $('RSS Feed Trigger').item.json.title }}",
+            "Date": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video Title",
+              "displayName": "Video Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Video Link",
+              "displayName": "Video Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post Text",
+              "displayName": "Post Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2160,
+        -840
+      ],
+      "id": "d23655fe-4891-4d29-bb99-305f01bd2d0e",
+      "name": "PostLog1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gYUDGiIUS9AQepCH",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "925c9cf7-ed28-4838-abf5-e0c9bcfa44e6",
+              "leftValue": "={{ $json['Video Link'] }}",
+              "rightValue": "={{ $('RSS Feed Trigger').item.json.link }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        200,
+        -700
+      ],
+      "id": "c685a283-689f-4abe-8b99-a1931ff028b9",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "51a3ac66-7daf-461d-9c0d-76758ffff858",
+              "leftValue": "={{ $json.data.Respond }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        -740
+      ],
+      "id": "5aa81e58-6fec-4b0b-bf0a-e2126ef4bbc9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ $json.link }} does not exist"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -420
+      ],
+      "id": "fbbcc2a7-15d9-42a5-9050-c9743a1d9e0c",
+      "name": "Stop and Error-failure in RSS"
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Failed to receive email reply"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        -820
+      ],
+      "id": "a5ccb5d0-c287-4b53-ae4d-23fbaef81e8a",
+      "name": "Stop and Error| failure in email response"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Unable to publish the LinkedIn post due to an error."
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        -640
+      ],
+      "id": "07d244b8-6c2b-451d-ad2f-8c63726b621e",
+      "name": "Stop and Error| fail to publish post"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent: Creat Post/Rewrite Post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate - link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a mail to manager": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a post": {
+      "main": [
+        [
+          {
+            "node": "validate -Published",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Agent: Creat Post/Rewrite Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate - link": {
+      "main": [
+        [
+          {
+            "node": "PostLog",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error-failure in RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PostLog": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent: Creat Post/Rewrite Post": {
+      "main": [
+        [
+          {
+            "node": "Send a mail to manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Accept/Decline": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "validate -Published": {
+      "main": [
+        [
+          {
+            "node": "PostLog1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error| fail to publish post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Email Accept/Decline",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error| failure in email response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "ZwnmV4CCO86SVhYc"
+  },
+  "versionId": "8e969dc6-50ea-40c0-ac05-87be52ddccea",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2bc92976a26aaeb709589d667c027d7b48a135a37ee03830ec5023b24e9ad6c6"
+  },
+  "id": "n6EQgPdyA5z6R3Ob",
+  "tags": []
+}
